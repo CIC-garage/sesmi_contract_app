@@ -1,0 +1,14 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+  <SelectDialog
+    noDataText="No Data Found"
+    title="Select Company"
+    search="handleSearchComp"
+    confirm="onSelectCompanyList"
+    cancel="onSelectCompanyList"
+    items="{dialog>/}">
+    <StandardListItem
+      title="{dialog>CompanyCode}"
+      description="{dialog>CompanyCodeName}"
+      type="Active" />
+  </SelectDialog>
+</core:FragmentDefinition>

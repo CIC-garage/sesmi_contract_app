@@ -1,0 +1,44 @@
+{
+  "name": "SESMI_CONTRACT_APP",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@cap-js/hana": "^1",
+    "@sap-cloud-sdk/http-client": "^3.25.0",
+    "@sap/cds": "^8.6.1",
+    "@sap/xsenv": "^5.4.0",
+    "@sap/xssec": "^4.2.8",
+    "express": "^4"
+  },
+  "devDependencies": {
+    "@cap-js/cds-types": "^0.8.0",
+    "@cap-js/sqlite": "^1",
+    "@sap/cds-dk": "^8",
+    "@sap/ux-specification": "UI5-1.131",
+    "rimraf": "^5.0.5"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-com.cicre.po": "cds watch --open com.cicre.po/webapp/index.html?sap-ui-xx-viewCache=false",
+    "undeploy": "cf undeploy SESMI_CONTRACT_APP --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+  },
+  "cds": {
+    "sql": {
+      "native_hana_associations": false
+    },
+    "requires": {
+      "auth": "mocked",
+      "destinations": true
+    },
+    "cdsc":{
+      "severities": {
+        "odata-spec-violation-no-key": "Warning"
+      }
+    }
+  }
+}
