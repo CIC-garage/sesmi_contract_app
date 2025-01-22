@@ -24,20 +24,20 @@
 					<fb:FilterItem name="A"
 								   label="{i18n>Company}">
 						<fb:control>
-							<Input id="idSearchByCompany"
-								   showValueHelp="true"
-								   valueHelpOnly="false"
-								   valueHelpRequest="onDisplaySearchCompDialog"
-								   change="onSearchCompanyChange"
-								   showSuggestion="true"
-								   suggest="handleSuggestCompCode"
-								   suggestionItems="{/ValueHelpSet}"
-								   suggestionItemSelected="onSelectCompanySuggestion">
-								<suggestionItems>
-									<core:Item text="{IdText}"
-											   key="{IdNumber}" />
-								</suggestionItems>
-							</Input>
+							<Input
+  id="idSearchByCompany"
+  showValueHelp="true"
+  valueHelpOnly="false"
+  valueHelpRequest="onDisplaySearchCompDialog"
+  change="onSearchCompanyChange"
+  showSuggestion="true"
+  suggest="handleSuggestCompCode"
+  suggestionItems="{}"
+  suggestionItemSelected="onSelectCompanySuggestion">
+  <suggestionItems>
+    <core:Item text="{dialog>CompanyCodeName}" key="{dialog>CompanyCode}" />
+  </suggestionItems>
+</Input>
 						</fb:control>
 					</fb:FilterItem>
 					<fb:FilterItem name="s"
@@ -50,11 +50,11 @@
 								   change="onSearchProjectChange"
 								   showSuggestion="true"
 								   suggest="handleSuggestProject"
-								   suggestionItems="{/ValueHelpSet}"
+								   suggestionItems="{}"
 								   suggestionItemSelected="onSelectCompanySuggestion">
 								<suggestionItems>
-									<core:Item text="{IdText}"
-											   key="{IdNumber}" />
+									<core:Item text="{}"
+											   key="{}" />
 								</suggestionItems>
 							</Input>
 						</fb:control>
@@ -69,11 +69,11 @@
 								   change="onSearchContractChange"
 								   showSuggestion="true"
 								   suggest="handleSuggestContract"
-								   suggestionItems="{/ValueHelpSet}"
+								   suggestionItems="{}"
 								   suggestionItemSelected="onSelectCompanySuggestion">
 								<suggestionItems>
-									<core:Item text="{IdText}"
-											   key="{IdNumber}" />
+									<core:Item text="{}"
+											   key="{}" />
 								</suggestionItems>
 							</Input>
 						</fb:control>
@@ -91,11 +91,11 @@
 								   change="onSearchWBS"
 								   showSuggestion="true"
 								   suggest="handleSuggestContract"
-								   suggestionItems="{/ValueHelpSet}"
+								   suggestionItems="{}"
 								   suggestionItemSelected="onSelectCompanySuggestion">
 								<suggestionItems>
-									<core:Item text="{IdText}"
-											   key="{IdNumber}" />
+									<core:Item text="{}"
+											   key="{}" />
 								</suggestionItems>
 							</Input>
 						</fb:control>
@@ -109,12 +109,12 @@
 								   valueHelpRequest="onDisplaySearchVendorDialog"
 								   showSuggestion="true"
 								   suggest="handleSuggestVendor"
-								   suggestionItems="{/ValueHelpSet}"
+								   suggestionItems="{}"
 								   change="onSearchByVendor"
 								   suggestionItemSelected="onSelectVendorSuggestion">
 								<suggestionItems>
-									<core:Item text="{IdText}"
-											   key="{IdNumber}" />
+									<core:Item text="{}"
+											   key="{}" />
 								</suggestionItems>
 							</Input>
 						</fb:control>
@@ -129,11 +129,11 @@
 								   showSuggestion="true"
 								   change="onSearchSuggestDecTy"
 								   suggest="handleSuggestDecTy"
-								   suggestionItems="{/ValueHelpSet}"
+								   suggestionItems="{}"
 								   suggestionItemSelected="onSelectDecTy">
 								<suggestionItems>
-									<core:Item text="{IdText}"
-											   key="{IdNumber}" />
+									<core:Item text="{}"
+											   key="{}" />
 								</suggestionItems>
 							</Input>
 						</fb:control>
@@ -150,11 +150,11 @@
 								   change="onSearchPOrgChange"
 								   showSuggestion="true"
 								   suggest="handleSuggestPOrg"
-								   suggestionItems="{/ValueHelpSet}"
+								   suggestionItems="{}"
 								   suggestionItemSelected="onSelectPOrgSuggestion">
 								<suggestionItems>
-									<core:Item text="{IdText}"
-											   key="{IdNumber}" />
+									<core:Item text="{}"
+											   key="{}" />
 								</suggestionItems>
 							</Input>
 						</fb:control>
@@ -169,11 +169,11 @@
 								   change="onserviceTypeChange"
 								   showSuggestion="true"
 								   suggest="handleserviceType"
-								   suggestionItems="{/ValueHelpSet}"
+								   suggestionItems="{}"
 								   suggestionItemSelected="onSelectserviceType">
 								<suggestionItems>
-									<core:Item text="{IdText}"
-											   key="{IdNumber}" />
+									<core:Item text="{}"
+											   key="{}" />
 								</suggestionItems>
 							</Input>
 						</fb:control>
@@ -183,13 +183,7 @@
 						<fb:control>
 							<ComboBox id="idFConstructionType"
 									  selectedKey="{localJson>/ConstructionType}"
-									  enabled="{localJson>/editMode}"
-									  items="{path: '/ValueHelpSet', 
-                                        filters: [{path: 'ValueHelpType', operator: 'EQ', value1: 'ConstType'}]}">
-								<items>
-									<core:Item text="{IdText}"
-											   key="{IdNumber}" />
-								</items>
+									  enabled="{localJson>/editMode}">
 							</ComboBox>
 						</fb:control>
 					</fb:FilterItem>
@@ -210,7 +204,7 @@
 					showValueHelp="true" valueHelpOnly="false" valueHelpRequest="onDisplaySearchPGrpDialog"
 					change="onSearchPGrpChange" showSuggestion="true" suggest="handleSuggestPGrp"
 					suggestionItems="{/ValueHelpSet}" suggestionItemSelected="onSelectPGrpSuggestion"> <suggestionItems>
-					<core:Item text="{IdText}" key="{IdNumber}"/> </suggestionItems> </Input> </fb:control>
+					<core:Item text="{}" key="{}"/> </suggestionItems> </Input> </fb:control>
 					</fb:FilterItem>-->
 				</fb:filterItems>
 			</fb:FilterBar>
@@ -263,15 +257,15 @@
 							<!--<ComboBox
 							selectedKey="{poModel>DocType}" enabled="false" items="{path: '/ValueHelpSet', filters:
 							[{path: 'ValueHelpType', operator: 'EQ', value1: 'DocType'}]}"> <items> <core:Item
-							text="{IdText}" key="{IdNumber}"/> </items> </ComboBox>-->
+							text="{IdText}" key="{}"/> </items> </ComboBox>-->
 							<!--<ComboBox
 							selectedKey="{poModel>PurchOrg}" enabled="false" items="{path: '/ValueHelpSet', filters:
 							[{path: 'ValueHelpType', operator: 'EQ', value1: 'PORG'}]}"> <items> <core:Item
-							text="{IdText}" key="{IdNumber}"/> </items> </ComboBox>-->
+							text="{IdText}" key="{}"/> </items> </ComboBox>-->
 							<Text text="{dataModel>VendorName}" />
 							<!-- <ComboBox selectedKey="{poModel>Vendor}" enabled="false" items="{path: '/ValueHelpSet',
 							filters: [{path: 'ValueHelpType', operator: 'EQ', value1: 'Vendor'}]}"> <items> <core:Item
-							text="{IdText}" key="{IdNumber}"/> </items> </ComboBox>-->
+							text="{IdText}" key="{}"/> </items> </ComboBox>-->
 							<Text text="{dataModel>CreatedBy}" />
 							<Text text="{dataModel>LastChangedBy}" />
 							<!--<ProgressIndicator class="sapUiSmallMarginBottom"

@@ -30,6 +30,15 @@
   "cds": {
     "sql": {
       "native_hana_associations": false
+    },
+    "requires": {
+      "auth": "mocked",
+      "destinations": true
+    },
+    "cdsc":{
+      "severities": {
+        "odata-spec-violation-no-key": "Warning"
+      }
     }
   }
 }
