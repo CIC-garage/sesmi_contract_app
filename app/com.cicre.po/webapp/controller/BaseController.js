@@ -32,7 +32,7 @@ sap.ui.define([
 			if (sPreviousHash !== undefined) {
 				window.history.go(-1);
 			} else {
-				this.getRouter().navTo("worklist", {}, true /*no history*/);
+				this.getRouter().navTo("RouteWorkList", {}, true /*no history*/);
 			}
 		},
 		/**

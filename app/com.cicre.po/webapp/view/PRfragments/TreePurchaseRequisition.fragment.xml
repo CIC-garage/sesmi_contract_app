@@ -47,7 +47,7 @@
 							[
 							{path: 'localJson>Indicator'}						
 							] 
-							, formatter: 'com.cic.po.model.formatter.numOfRows'}" wrapping="false" width="100%"
+							, formatter: 'com.cicre.po.model.formatter.numOfRows'}" wrapping="false" width="100%"
                                                         visible="{= !!${localJson>LongDesc}}" />
                                                 </ui:template>
                                             </ui:Column>

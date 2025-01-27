@@ -9,8 +9,10 @@
     "@cap-js/hana": "^1",
     "@sap-cloud-sdk/http-client": "^3.25.0",
     "@sap/cds": "^8.6.1",
+    "@sap/hana-client": "^2.23.26",
     "@sap/xsenv": "^5.4.0",
     "@sap/xssec": "^4.2.8",
+    "dotenv": "^16.4.7",
     "express": "^4"
   },
   "devDependencies": {
@@ -35,7 +37,7 @@
       "auth": "mocked",
       "destinations": true
     },
-    "cdsc":{
+    "cdsc": {
       "severities": {
         "odata-spec-violation-no-key": "Warning"
       }

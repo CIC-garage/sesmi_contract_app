@@ -38,7 +38,7 @@ sap.ui.define(
 		 * @public
 		 */
 		onInit: function () {
-		  var oViewModel,
+			var oViewModel,
 			iOriginalBusyDelay,
 			oTable = this.byId("table");
 		  //	this.getRouter().getRoute("worklist").attachPatternMatched(this._onObjectMatched, this);
@@ -50,6 +50,7 @@ sap.ui.define(
 		  // keeps the search state
 		  this._oTableSearchState = [];
 		  var  dataModel = new JSONModel();
+		//   const tableModel = this.getOwnerComponent().getModel();
   
 		  // Model used to manipulate control states
 		  oViewModel = new JSONModel({
@@ -61,18 +62,18 @@ sap.ui.define(
 			tableNoDataText: this.getResourceBundle().getText("tableNoDataText"),
 			tableBusyDelay: 0,
 		  });
-		//   this.sCoCode = "1000";
-		//   this.sCoText = "EDSCO";
+		  this.sCoCode = "1000";
+		  this.sCoText = "EDSCO";
 		  this.getView().byId("idSearchByCompany").setValue(this.sCoText);
 		  
-		//   this.sDocType = "ZSES";
-		//   this.sDocTypeText = "SESMI CONTRACTS";
+		  this.sDocType = "ZSES";
+		  this.sDocTypeText = "SESMI CONTRACTS";
 		  this.getView().byId("idSearchByDecTy").setValue(this.sDocTypeText);
 		  
 		  this.setModel(oViewModel, "worklistView");
 		  this.getView().setModel(dataModel, "dataModel");
-		//   this.sPOrg = "1000";
-		//   this.POrgText = "TMG CENTRAL Purch.";
+		  this.sPOrg = "1000";
+		  this.POrgText = "TMG CENTRAL Purch.";
 		  this.getView().byId("idPurchaseOrganization").setValue(this.POrgText);
   
 		  // Make sure, busy indication is showing immediately so there is no
@@ -82,6 +83,62 @@ sap.ui.define(
 			// Restore original busy indicator delay for worklist's table
 			oViewModel.setProperty("/tableBusyDelay", iOriginalBusyDelay);
 		  });
+		  this.onSearch();
+		},
+		/* =========================================================== */
+		/* event handlers                                              */
+		/* =========================================================== */
+  
+		/**
+		 * Triggered by the table's 'updateFinished' event: after new table
+		 * data is available, this handler method updates the table counter.
+		 * This should only happen if the update was successful, which is
+		 * why this handler is attached to 'updateFinished' and not to the
+		 * table's list binding's 'dataReceived' method.
+		 * @param {sap.ui.base.Event} oEvent the update finished event
+		 * @public
+		 */
+		onUpdateFinished: function (oEvent) {
+			// update the worklist's object counter after the table update
+			var sTitle,
+			  oTable = oEvent.getSource(),
+			  iTotalItems = oEvent.getParameter("total");
+			// only update the counter if the length is final and
+			// the table is not empty
+			if (iTotalItems && oTable.getBinding("items").isLengthFinal()) {
+			  sTitle = this.getResourceBundle().getText("Contract", [iTotalItems]);
+			} else {
+			  sTitle = this.getResourceBundle().getText("Contract");
+			}
+			this.getModel("worklistView").setProperty("/worklistTableTitle", sTitle);
+		  },
+	
+		  /**
+		   * Event handler when a table item gets pressed
+		   * @param {sap.ui.base.Event} oEvent the table selectionChange event
+		   * @public
+		   */
+		  onPress: function (oEvent) {
+			// The source is the list item that got pressed
+			this._showObject(oEvent.getSource());
+		  },
+		  onSearch: function (oEvent) {
+			var oController = this;
+			var oModel = oController.getOwnerComponent().getModel();
+			oModel.bindList("/HeaderSet")
+        .requestContexts()
+        .then((aContexts) => {
+            const aData = aContexts.map(oContext => oContext.getObject());
+            console.log("HeaderSet Data:", aData);
+
+            // Set data to a JSON model for local use
+            // const oJsonModel = new sap.ui.model.json.JSONModel(aData);
+            // this.getView().setModel(oJsonModel, "localModel");
+			oController.getView().getModel("dataModel").setProperty("/HeaderSet", aData);
+        })
+        .catch((oError) => {
+            console.error("Error fetching HeaderSet data:", oError);
+        });
 		},
         
 		////////////////////////////// company code search value help ////////////////////////////////
@@ -109,7 +166,12 @@ sap.ui.define(
             
               // Open the dialog
               this._oDialog.open();
-		}
+		},
+		onCreateContractPress: function (oItem) {
+			this.getView().setBusy(true);
+			this.getRouter().navTo("createContract");
+			this.getView().setBusy(false);
+		  }
     
     })
     });

@@ -96,7 +96,12 @@
           "target": [
             "TargetWorkList"
           ]
-        }
+        },
+				{
+					"pattern": "createContract",
+					"name": "createContract",
+					"target": "createContract"
+				}
       ],
       "targets": {
         "TargetWorkList": {
@@ -105,7 +110,13 @@
           "clearControlAggregation": false,
           "viewId": "WorkList",
           "viewName": "WorkList"
-        }
+        },
+				"createContract": {
+					"viewPath": "com.cicre.po.view",
+					"viewName": "CreateContract",
+					"viewLevel": 2,
+					"transition": "flip"
+				}
       }
     },
     "rootView": {

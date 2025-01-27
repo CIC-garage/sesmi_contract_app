@@ -3,88 +3,90 @@ ID: SESMI_CONTRACT_APP
 description: A simple CAP project.
 version: 1.0.0
 modules:
-- name: SESMI_CONTRACT_APP-srv
-  type: nodejs
-  path: gen/srv
-  requires:
-  - name: SESMI_CONTRACT_APP-db
-  provides:
-  - name: srv-api
-    properties:
-      srv-url: ${default-url}
-  parameters:
-    buildpack: nodejs_buildpack
-    readiness-health-check-http-endpoint: /health
-    readiness-health-check-type: http
-  build-parameters:
-    builder: npm
-- name: SESMI_CONTRACT_APP-db-deployer
-  type: hdb
-  path: gen/db
-  requires:
-  - name: SESMI_CONTRACT_APP-db
-  parameters:
-    buildpack: nodejs_buildpack
-- name: SESMI_CONTRACT_APP-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: SESMI_CONTRACT_APP-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
+  - name: SESMI_CONTRACT_APP-srv
+    type: nodejs
+    path: gen/srv
     requires:
-    - artifacts:
-      - comcicrepo.zip
-      name: comcicrepo
-      target-path: resources/
-- name: comcicrepo
-  type: html5
-  path: app/com.cicre.po
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
+      - name: SESMI_CONTRACT_APP-db
+      - name: SESMI_CONTRACT_APP-destination-service
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    parameters:
+      buildpack: nodejs_buildpack
+      readiness-health-check-http-endpoint: /health
+      readiness-health-check-type: http
+    build-parameters:
+      builder: npm
+  - name: SESMI_CONTRACT_APP-db-deployer
+    type: hdb
+    path: gen/db
+    requires:
+      - name: SESMI_CONTRACT_APP-db
+    parameters:
+      buildpack: nodejs_buildpack
+  - name: SESMI_CONTRACT_APP-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: SESMI_CONTRACT_APP-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - comcicrepo.zip
+          name: comcicrepo
+          target-path: resources/
+  - name: comcicrepo
+    type: html5
+    path: app/com.cicre.po
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms:
+        []
 resources:
-- name: SESMI_CONTRACT_APP-db
-  type: com.sap.xs.hdi-container
-  parameters:
-    service: hana
-    service-plan: hdi-shared
-- name: SESMI_CONTRACT_APP-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: SESMI_CONTRACT_APP-html5-srv
-    service-plan: app-host
-- name: SESMI_CONTRACT_APP-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: false
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: SESMI_CONTRACT_APP-destination-service
-    service-plan: lite
+  - name: SESMI_CONTRACT_APP-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+  - name: SESMI_CONTRACT_APP-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: SESMI_CONTRACT_APP-html5-srv
+      service-plan: app-host
+  - name: SESMI_CONTRACT_APP-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: false
+        init_data:
+          instance:
+            destinations:
+              - Authentication: NoAuthentication
+                Name: ui5
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+            existing_destinations_policy: update
+        version: 1.0.0
+      service: destination
+      service-name: SESMI_CONTRACT_APP-destination-service
+      service-plan: lite
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
 build-parameters:
   before-all:
-  - builder: custom
-    commands:
-    - npm ci
-    - npx cds build --production
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production

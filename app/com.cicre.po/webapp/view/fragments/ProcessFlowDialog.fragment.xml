@@ -4,8 +4,8 @@
 		<content>
 			<ObjectHeader title="{localJson>texts/3}" intro="{localJson>titleAbbreviation}">
 				<statuses>
-					<ObjectStatus text="{localJson>stateText}" state="{path:'localJson>texts/2',formatter:'com.cic.po.model.formatter.getDecisionState'}"/>
-					<ObjectStatus text="{localJson>texts/0}" state="{path:'localJson>texts/2',formatter:'com.cic.po.model.formatter.getDecisionState'}"/>
+					<ObjectStatus text="{localJson>stateText}" state="{path:'localJson>texts/2',formatter:'com.cicre.po.model.formatter.getDecisionState'}"/>
+					<ObjectStatus text="{localJson>texts/0}" state="{path:'localJson>texts/2',formatter:'com.cicre.po.model.formatter.getDecisionState'}"/>
 					<ObjectStatus text="{localJson>texts/1}" state="None"/>
 				</statuses>
 			</ObjectHeader>

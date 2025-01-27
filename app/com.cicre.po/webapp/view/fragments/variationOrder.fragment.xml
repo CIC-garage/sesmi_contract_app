@@ -28,7 +28,7 @@
 			<Text text="{localJson>BoqDesc}"/>
 		
 			
-			<Text text ="{path : 'localJson>Amount', formatter : 'com.cic.po.model.formatter.NumberWithCommas'}" />
+			<Text text ="{path : 'localJson>Amount', formatter : 'com.cicre.po.model.formatter.NumberWithCommas'}" />
 			<!--<Text number="{ parts:[{path:'localJson>Amount'},{path:'localJson>/Currency'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }"   />-->
 		</cells>
 	</ColumnListItem>

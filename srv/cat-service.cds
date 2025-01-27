@@ -1,7 +1,6 @@
-using my.bookshop as my from '../db/schema';
+
 
 service CatalogService {
-    @readonly entity Books as projection on my.Books;
     entity CompanyCode @readonly {
     PERSONID   :  UUID ;
     LASTNAME : String;
@@ -10,4 +9,14 @@ service CatalogService {
     CITY : String;
     ID : String;
   };
+
+  entity HeaderSet @readonly{
+    Project    : String;
+    Contract   : String; 
+    PO         : String;
+    Vendor     : String;
+    CreatedBy : String;
+    LastChangedBy : String;
+    Status : String;
+  }
 }

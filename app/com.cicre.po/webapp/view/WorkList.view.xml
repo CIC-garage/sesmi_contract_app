@@ -209,77 +209,49 @@
 				</fb:filterItems>
 			</fb:FilterBar>
 			<Table id="table"
-				   width="auto"
-				   class="sapUiResponsiveMargin"
-					items="{dataModel>/results}"
-				   noDataText="No Data"
-				   busyIndicatorDelay="{worklistView>/tableBusyDelay}"
-				   growing="true"
-				   growingScrollToLoad="true"
-				   updateFinished="onUpdateFinished">
-				<columns>
-					<Column>
-						<Text text="{i18n>Project}" />
-					</Column>
-					<Column>
-						<Text text="{i18n>Contract}" />
-					</Column>
-					<Column>
-						<Text text="{i18n>PO}" />
-					</Column>
-					<Column>
-						<Text text="{i18n>Vendor}" />
-					</Column>
-					<Column>
-						<Text text="{i18n>CreatedBy}" />
-					</Column>
-					<Column>
-						<Text text="{i18n>LastChangedBy}" />
-					</Column>
-					<!-- <Column>
-						<Text text="{i18n>Progress}" />
-					</Column>-->
-					<Column>
-						<Text text="{i18n>Status}" />
-					</Column>
-				</columns>
-				<items>
-					<ColumnListItem type="Navigation"
-									press="onPressPO">
-						<cells>
-							<Text text="{dataModel>ProjectDesc}" />
-							<Text text="{dataModel>PoNumber}" />
-							<Text text="{dataModel>PurchDoc}" />
-							<!-- <Text text="{poModel>DocType}"/> <ComboBox selectedKey="{poModel>ContractType}"
-							enabled="false" > <items> <core:Item text="Lump Sum" key="LumpSum"/> <core:Item
-							text="Remeasured" key="Remeasured"/> <core:Item text="Mixed" key="Mixed"/> </items>
-							</ComboBox>-->
-							<!--<ComboBox
-							selectedKey="{poModel>DocType}" enabled="false" items="{path: '/ValueHelpSet', filters:
-							[{path: 'ValueHelpType', operator: 'EQ', value1: 'DocType'}]}"> <items> <core:Item
-							text="{IdText}" key="{}"/> </items> </ComboBox>-->
-							<!--<ComboBox
-							selectedKey="{poModel>PurchOrg}" enabled="false" items="{path: '/ValueHelpSet', filters:
-							[{path: 'ValueHelpType', operator: 'EQ', value1: 'PORG'}]}"> <items> <core:Item
-							text="{IdText}" key="{}"/> </items> </ComboBox>-->
-							<Text text="{dataModel>VendorName}" />
-							<!-- <ComboBox selectedKey="{poModel>Vendor}" enabled="false" items="{path: '/ValueHelpSet',
-							filters: [{path: 'ValueHelpType', operator: 'EQ', value1: 'Vendor'}]}"> <items> <core:Item
-							text="{IdText}" key="{}"/> </items> </ComboBox>-->
-							<Text text="{dataModel>CreatedBy}" />
-							<Text text="{dataModel>LastChangedBy}" />
-							<!--<ProgressIndicator class="sapUiSmallMarginBottom"
-											   percentValue="{dataModel>ProcessContractValue}"
-											   displayValue="{dataModel>ProcessContractValue}%"
-											   showValue="true"
-											   state="None"
-											   displayOnly="true" />-->
-							<ObjectStatus text="{dataModel>TempStatus}"
-										  state="{= ${dataModel>Status} === 'SUBMITTED' ? 'Success' : ${qsModel>ContractTermsStatus} === 'C' ? 'None' : 'Warning'}" />
-						</cells>
-					</ColumnListItem>
-				</items>
-			</Table>
+       width="auto"
+       class="sapUiResponsiveMargin"
+       items="{dataModel>/HeaderSet}" >
+    <columns>
+        <Column>
+            <Text text="{i18n>Project}" />
+        </Column>
+        <Column>
+            <Text text="{i18n>Contract}" />
+        </Column>
+        <Column>
+            <Text text="{i18n>PO}" />
+        </Column>
+        <Column>
+            <Text text="{i18n>Vendor}" />
+        </Column>
+        <Column>
+            <Text text="{i18n>CreatedBy}" />
+        </Column>
+        <Column>
+            <Text text="{i18n>LastChangedBy}" />
+        </Column>
+        <Column>
+            <Text text="{i18n>Status}" />
+        </Column>
+    </columns>
+    <items>
+        <ColumnListItem type="Navigation"
+                        press="onPressPO">
+            <cells>
+                <Text text="{dataModel>PROJECT}" />
+                <Text text="{dataModel>CONTRACT}" />
+                <Text text="{dataModel>PO}" />
+                <Text text="{dataModel>VENDOR}" />
+                <Text text="{dataModel>CREATEDBY}" />
+                <Text text="{dataModel>LASTCHANGEDBY}" />
+                <ObjectStatus text="{dataModel>STATUS}"
+                              state="{= ${dataModel>STATUS} === 'SUBMITTED' ? 'Success' : 'Warning'}" />
+            </cells>
+        </ColumnListItem>
+    </items>
+</Table>
+
 		</semantic:content>
 		<semantic:customFooterContent>
 			<HBox height="100%"
