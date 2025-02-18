@@ -1,0 +1,8 @@
+applications:
+- name: sesmi-contract
+  memory: 1024M
+  instances: 1
+  buildpacks:
+    - nodejs_buildpack
+  env:
+    NODE_ENV: production

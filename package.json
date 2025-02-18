@@ -11,7 +11,8 @@
     "@sap/cds": "^8.6.1",
     "@sap/hana-client": "^2.23.26",
     "@sap/xsenv": "^5.4.0",
-    "@sap/xssec": "^4.2.8",
+    "@sap/xssec": "^4.4.0",
+    "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "express": "^4"
   },

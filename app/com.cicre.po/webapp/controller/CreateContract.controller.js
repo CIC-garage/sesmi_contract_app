@@ -270,27 +270,30 @@ sap.ui.define([
 			},
 			////////////////////////////// company code search value help ////////////////////////////////
 			onDisplaySearchCompDialog: function (oEvent) {
-				this.compInd = oEvent.getParameters().id;
+				this.compInd = oEvent.getSource().getId();
+			
 				if (!this._oDialog) {
 					this._oDialog = sap.ui.xmlfragment("com.cicre.po.view.fragments.CompanySearchDialog", this);
-					this._oDialog.setModel(this.getView().getModel());
+					this.getView().addDependent(this._oDialog);
 				}
-				this._oDialog.open();
-				var oTemplate = new sap.m.StandardListItem({
-					title: "{IdText}",
-					description: "{IdNumber}"
-				});
-				var aFilters = [];
-
-				var oFilter1 = new sap.ui.model.Filter("ValueHelpType", sap.ui.model.FilterOperator.EQ, 'CompCode');
-				aFilters.push(oFilter1);
-
+			
+				const oModel = this.getOwnerComponent().getModel();
+				this._oDialog.setModel(oModel, "dialog");
+			
+				// Ensure correct binding path
 				this._oDialog.bindAggregation("items", {
-					path: "/ValueHelpSet",
-					template: oTemplate,
-					filters: aFilters
+					path: "/ValueHelpSet", // Ensure this matches your entity
+					filters: [new sap.ui.model.Filter("ValueHelpType", sap.ui.model.FilterOperator.EQ, "CompCode")],
+					template: new sap.m.StandardListItem({
+						title: "{IdText}",
+						description: "{IdNumber}",
+						type: "Active"
+					})
 				});
+			
+				this._oDialog.open();
 			},
+			
 			handleSearchComp: function (oEvent) {
 				var sValue = oEvent.getParameter("value");
 				var oTemplate = new sap.m.StandardListItem({
@@ -3219,32 +3222,27 @@ sap.ui.define([
 			/////////////// project f4 /////////////////////////////////
 			// open project value help
 			onDisplaySearchProjectDialog: function () {
-				if (this._pDialog) {
-					this._pDialog.destroy();
-					this._pDialog = null;
-				}
+			
 				if (!this._pDialog) {
 					this._pDialog = sap.ui.xmlfragment("com.cicre.po.view.fragments.ProjectSearchDialog", this);
-
-
-					this._pDialog.setModel(this.getView().getModel());
+					this.getView().addDependent(this._pDialog);
 				}
-				this._pDialog.open();
-				var oTemplate = new sap.m.StandardListItem({
-					title: "{IdText}",
-					description: "{IdNumber}",
-					info : "{SelectionParameter}"
-					
-				});
-				var aFilters = [];
-
-				var oFilter1 = new sap.ui.model.Filter("ValueHelpType", sap.ui.model.FilterOperator.EQ, 'PROJ');
-				aFilters.push(oFilter1);
+			
+				const oModel = this.getOwnerComponent().getModel();
+				this._pDialog.setModel(oModel, "dialog");
+			
+				// Ensure correct binding path
 				this._pDialog.bindAggregation("items", {
-					path: "/ValueHelpSet",
-					template: oTemplate,
-					filters: aFilters
+					path: "/ValueHelpSet", // Ensure this matches your entity
+					filters: [new sap.ui.model.Filter("ValueHelpType", sap.ui.model.FilterOperator.EQ, "PROJ")],
+					template: new sap.m.StandardListItem({
+						title: "{IdText}",
+						description: "{IdNumber}",
+						type: "Active"
+					})
 				});
+			
+				this._pDialog.open();
 			},
 
 			//search in project value help dialog
