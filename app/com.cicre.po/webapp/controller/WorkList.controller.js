@@ -12,7 +12,7 @@ sap.ui.define(
 	function (BaseController, JSONModel, History, formatter, Filter, FilterOperator, Spreadsheet, MessageToast) {
 	  "use strict";
   
-	  return BaseController.extend("com.cicre.po.controller.Worklist", {
+	  return BaseController.extend("com.cicre.po.controller.WorkList", {
 		formatter: formatter,
 		sCoCode: "",
 		sPONO: "",
@@ -142,30 +142,29 @@ sap.ui.define(
 		},
         
 		////////////////////////////// company code search value help ////////////////////////////////
-		onDisplaySearchCompDialog: function () {
-            if (!this._oDialog) {
-                this._oDialog = sap.ui.xmlfragment("com.cicre.po.view.fragments.CompanySearchDialog", this);
-                this.getView().addDependent(this._oDialog); // Add the dialog as a dependent to ensure proper lifecycle handling.
-                this._oDialog.setModel(this.getView().getModel()); // Bind the same model to the dialog.
-              }
-            
-              // Fetch data programmatically to populate the dialog
-              const oModel = this.getOwnerComponent().getModel(); // OData V4 model
-              const oBinding = oModel.bindList("/CompanyCode"); // Bind the list to the entity
-            
-              oBinding.requestContexts(0, 100).then((aContexts) => {
-                const aData = aContexts.map((oContext) => oContext.getObject());
-            
-                // Create a JSON model for the dialog
-                const oDialogModel = new sap.ui.model.json.JSONModel();
-                oDialogModel.setData(aData);
-                this._oDialog.setModel(oDialogModel, "dialog"); // Set the JSON model for the dialog
-              }).catch((oError) => {
-                console.error("Error fetching data:", oError);
-              });
-            
-              // Open the dialog
-              this._oDialog.open();
+		onDisplaySearchCompDialog: function (oEvent) {
+			this.compInd = oEvent.getSource().getId();
+			
+			if (!this._oDialog) {
+				this._oDialog = sap.ui.xmlfragment("com.cicre.po.view.fragments.CompanySearchDialog", this);
+				this.getView().addDependent(this._oDialog);
+			}
+		
+			const oModel = this.getOwnerComponent().getModel();
+			this._oDialog.setModel(oModel, "dialog");
+		
+			// Ensure correct binding path
+			this._oDialog.bindAggregation("items", {
+				path: "/ValueHelpSet", // Ensure this matches your entity
+				filters: [new sap.ui.model.Filter("ValueHelpType", sap.ui.model.FilterOperator.EQ, "CompCode")],
+				template: new sap.m.StandardListItem({
+					title: "{IdText}",
+					description: "{IdNumber}",
+					type: "Active"
+				})
+			});
+		
+			this._oDialog.open();
 		},
 		onCreateContractPress: function (oItem) {
 			this.getView().setBusy(true);

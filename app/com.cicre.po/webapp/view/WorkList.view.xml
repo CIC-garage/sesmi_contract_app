@@ -1,4 +1,4 @@
-<mvc:View controllerName="com.cicre.po.controller.Worklist"
+<mvc:View controllerName="com.cicre.po.controller.WorkList"
 		  xmlns="sap.m"
 		  xmlns:mvc="sap.ui.core.mvc"
 		  xmlns:semantic="sap.m.semantic"
@@ -35,7 +35,7 @@
   suggestionItems="{}"
   suggestionItemSelected="onSelectCompanySuggestion">
   <suggestionItems>
-    <core:Item text="{dialog>CompanyCodeName}" key="{dialog>CompanyCode}" />
+    <core:Item text="{IdText}" key="{IdNumber}" />
   </suggestionItems>
 </Input>
 						</fb:control>
