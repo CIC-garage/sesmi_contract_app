@@ -110,7 +110,7 @@ sap.ui.define([
 				that.getView().byId("idCurrency").setValue("");
 				that.getView().byId("idMeasurementMethod").setSelectedKey("REMS");
 				that.getView().byId("idConstructionType").setSelectedKey("T");
-				that.getView().byId("idCommencement").getSelectedKeys("");
+				// that.getView().byId("idCommencement").getSelectedKeys("");
 				that.getView().byId("idRefrenceContract").setValue("");
 				that.getView().byId("idDocumentDate").setValue("");
 				that.getView().byId("idValidFromDate").setValue("");
@@ -133,8 +133,8 @@ sap.ui.define([
 				});
 
 				that.getView().byId("idDocumentDate").setValue(oDateFormat.format(new Date()));
-				that.getView().byId("idContractDurationDays").setValue(0);
-				that.getView().byId("idContractDurationMonth").setValue(0);
+				// that.getView().byId("idContractDurationDays").setValue(0);
+				// that.getView().byId("idContractDurationMonth").setValue(0);
 				that.IndexMonth();
 
 				var oModelJson = new sap.ui.model.json.JSONModel();
@@ -270,30 +270,27 @@ sap.ui.define([
 			},
 			////////////////////////////// company code search value help ////////////////////////////////
 			onDisplaySearchCompDialog: function (oEvent) {
-				this.compInd = oEvent.getSource().getId();
-			
+				this.compInd = oEvent.getParameters().id;
 				if (!this._oDialog) {
 					this._oDialog = sap.ui.xmlfragment("com.cicre.po.view.fragments.CompanySearchDialog", this);
-					this.getView().addDependent(this._oDialog);
+					this._oDialog.setModel(this.getView().getModel());
 				}
-			
-				const oModel = this.getOwnerComponent().getModel();
-				this._oDialog.setModel(oModel, "dialog");
-			
-				// Ensure correct binding path
-				this._oDialog.bindAggregation("items", {
-					path: "/ValueHelpSet", // Ensure this matches your entity
-					filters: [new sap.ui.model.Filter("ValueHelpType", sap.ui.model.FilterOperator.EQ, "CompCode")],
-					template: new sap.m.StandardListItem({
-						title: "{IdText}",
-						description: "{IdNumber}",
-						type: "Active"
-					})
-				});
-			
 				this._oDialog.open();
+				var oTemplate = new sap.m.StandardListItem({
+					title: "{IdText}",
+					description: "{IdNumber}"
+				});
+				var aFilters = [];
+
+				var oFilter1 = new sap.ui.model.Filter("ValueHelpType", sap.ui.model.FilterOperator.EQ, 'CompCode');
+				aFilters.push(oFilter1);
+
+				this._oDialog.bindAggregation("items", {
+					path: "/ValueHelpSet",
+					template: oTemplate,
+					filters: aFilters
+				});
 			},
-			
 			handleSearchComp: function (oEvent) {
 				var sValue = oEvent.getParameter("value");
 				var oTemplate = new sap.m.StandardListItem({
@@ -559,26 +556,31 @@ sap.ui.define([
 						that.sVendor = oContext.getObject().IdNumber;
 						that.sVendorName = oContext.getObject().IdText;
 						that.getView().byId("idVendor").setValue(oContext.getObject().IdText);
-						mModel.callFunction("/GetCurrencyExecuteAction", {
-							method: "GET",
-							urlParameters: {
-								"Vendor": that.sVendor
-							},
-							success: function (oData) {
-								console.log(oData);
+						// Define Action Path
+						let sVendor = that.sVendor
+						// Define Action Path (without executing it immediately)
+						let oContextBinding = mModel.bindContext("/GetCurrencyExecuteAction(...)");
+
+						// Set Parameters and Execute Later
+						oContextBinding.setParameter("Vendor", sVendor);
+
+						oContextBinding.execute().then(() => {
+							const oActionContext = oContextBinding.getBoundContext();
+							let oData = oActionContext.getObject();
+							
+							console.log("Currency Data:", oData); // Debugging
+
+							if (oData && oData.Currency) {
 								that.getView().byId("idCurrency").setValue(oData.Currency);
-								if (oData.Currency === "USD") {
-									that.CustomCurrency = 2;
-								} else {
-									that.CustomCurrency = 2;
-								}
 								that.getView().getModel("localJson").setProperty("/Currency", oData.Currency);
-
-							},
-							error: function (e) {
-
+							} else {
+								sap.m.MessageToast.show("No currency data returned");
 							}
+						}).catch((oError) => {
+							console.error("Error executing action: ", oError);
+							sap.m.MessageBox.error("Failed to fetch currency");
 						});
+
 						//} 
 						/*else {
 							that.sConsultant = oContext.getObject().IdNumber;
@@ -2107,7 +2109,7 @@ sap.ui.define([
 					this.getView().byId("idPurchaseGroup"),
 					this.getView().byId("idPlant"),
 					this.getView().byId("idDocumentDate"),
-					this.getView().byId("idCommencementDate"),
+					// this.getView().byId("idCommencementDate"),
 					this.getView().byId("idValidFromDate"),
 					this.getView().byId("idValidToDate"),
 					this.getView().byId("idDeliveryDate"),
@@ -2161,13 +2163,13 @@ sap.ui.define([
 								}
 							});
 
-							if(that.getView().byId("idCommencement").getSelectedKeys().join() === ""){
-								that.getView().byId("idCommencement").setValueState("Error");
-								canContinue = false;
+							// if(that.getView().byId("idCommencement").getSelectedKeys().join() === ""){
+							// 	that.getView().byId("idCommencement").setValueState("Error");
+							// 	canContinue = false;
 							
-							}else{
-								that.getView().byId("idCommencement").setValueState("None");
-							}
+							// }else{
+							// 	that.getView().byId("idCommencement").setValueState("None");
+							// }
 							if (!canContinue) {
 								sap.m.MessageToast.show("Please Enter Manadatory Fields");
 								dialog.close();
@@ -2340,9 +2342,9 @@ sap.ui.define([
 										Message: "",
 										PurGroup: that.sPGrp,
 										CompCode: that.sCoCode,
-										DocDate: that.getView().byId("idDocumentDate").getValue() === "" ? null : that.getView().byId("idDocumentDate").getValue() + "T00:00:00",
-										VperStart: that.getView().byId("idValidFromDate").getValue() === "" ? null : that.getView().byId("idValidFromDate").getValue() + "T00:00:00",
-										VperEnd: that.getView().byId("idValidToDate").getValue() === "" ? null : that.getView().byId("idValidToDate").getValue() + "T00:00:00",
+										DocDate: that.getView().byId("idDocumentDate").getValue() === "" ? null : that.getView().byId("idDocumentDate").getValue(),
+										VperStart: that.getView().byId("idValidFromDate").getValue() === "" ? null : that.getView().byId("idValidFromDate").getValue(),
+										VperEnd: that.getView().byId("idValidToDate").getValue() === "" ? null : that.getView().byId("idValidToDate").getValue(),
 										Status: "",
 										DeleteInd: "",
 
@@ -2351,16 +2353,16 @@ sap.ui.define([
 										Currency: that.getView().byId("idCurrency").getValue(),
 										MeasMethod: that.getView().byId("idMeasurementMethod").getSelectedKey(),
 										ConstructionType: that.getView().byId("idConstructionType").getSelectedKey(),
-										CommencementId: that.getView().byId("idCommencement").getSelectedKeys().join(),
+										// CommencementId: that.getView().byId("idCommencement").getSelectedKeys().join(),
 										RefContract: that.getView().byId("idRefrenceContract").getValue(),
-										CreationDate: that.getView().byId("idDocumentDate").getValue() === "" ? null : that.getView().byId("idDocumentDate").getValue() + "T00:00:00",
-										ValidFrom: that.getView().byId("idValidFromDate").getValue() === "" ? null : that.getView().byId("idValidFromDate").getValue() + "T00:00:00",
-										ValidTo: that.getView().byId("idValidToDate").getValue() === "" ? null : that.getView().byId("idValidToDate").getValue() + "T00:00:00",
-										SigninDate: that.getView().byId("idDeliveryDate").getValue() === "" ? null : that.getView().byId("idDeliveryDate").getValue() + "T00:00:00",
-										RevisedValidTo: that.getView().byId("idRevisedValidToDate").getValue() === "" ? null : that.getView().byId("idRevisedValidToDate").getValue() + "T00:00:00",
-									    CommencementDate: that.getView().byId("idCommencementDate").getValue() === "" ? null : that.getView().byId("idCommencementDate").getValue() + "T00:00:00",
-										ContDurationMonth: that.getView().byId("idContractDurationMonth").getValue(),
-									 	ContDurationDays: that.getView().byId("idContractDurationDays").getValue(),
+										CreationDate: that.getView().byId("idDocumentDate").getValue() === "" ? null : that.getView().byId("idDocumentDate").getValue(),
+										ValidFrom: that.getView().byId("idValidFromDate").getValue() === "" ? null : that.getView().byId("idValidFromDate").getValue(),
+										ValidTo: that.getView().byId("idValidToDate").getValue() === "" ? null : that.getView().byId("idValidToDate").getValue(),
+										SigninDate: that.getView().byId("idDeliveryDate").getValue() === "" ? null : that.getView().byId("idDeliveryDate").getValue(),
+										RevisedValidTo: that.getView().byId("idRevisedValidToDate").getValue() === "" ? null : that.getView().byId("idRevisedValidToDate").getValue(),
+									    // CommencementDate: that.getView().byId("idCommencementDate").getValue() === "" ? null : that.getView().byId("idCommencementDate").getValue() + "T00:00:00",
+										// ContDurationMonth: that.getView().byId("idContractDurationMonth").getValue(),
+									 	// ContDurationDays: that.getView().byId("idContractDurationDays").getValue(),
 										IndexMonth: that.getView().byId("idIndexMonth").getSelectedKeys().join(),
 										Consultant: that.sConsultant,
 										ConsultantName: that.sConsultantName,
@@ -2391,7 +2393,7 @@ sap.ui.define([
 									var oModel = that.getView().getModel();
 									console.log(createdObject);
 									that.getView().setBusy(true);
-									oModel.create("/ContractPOHeaderSet", createdObject, {
+									oModel.bindList("/ContractPOHeaderSet").create(createdObject, {
 										success: function (oData, res) {
 
 											if (oData.PoNumber !== "") {
@@ -3222,27 +3224,32 @@ sap.ui.define([
 			/////////////// project f4 /////////////////////////////////
 			// open project value help
 			onDisplaySearchProjectDialog: function () {
-			
+				if (this._pDialog) {
+					this._pDialog.destroy();
+					this._pDialog = null;
+				}
 				if (!this._pDialog) {
 					this._pDialog = sap.ui.xmlfragment("com.cicre.po.view.fragments.ProjectSearchDialog", this);
-					this.getView().addDependent(this._pDialog);
+
+
+					this._pDialog.setModel(this.getView().getModel());
 				}
-			
-				const oModel = this.getOwnerComponent().getModel();
-				this._pDialog.setModel(oModel, "dialog");
-			
-				// Ensure correct binding path
-				this._pDialog.bindAggregation("items", {
-					path: "/ValueHelpSet", // Ensure this matches your entity
-					filters: [new sap.ui.model.Filter("ValueHelpType", sap.ui.model.FilterOperator.EQ, "PROJ")],
-					template: new sap.m.StandardListItem({
-						title: "{IdText}",
-						description: "{IdNumber}",
-						type: "Active"
-					})
-				});
-			
 				this._pDialog.open();
+				var oTemplate = new sap.m.StandardListItem({
+					title: "{IdText}",
+					description: "{IdNumber}",
+					info : "{SelectionParameter}"
+					
+				});
+				var aFilters = [];
+
+				var oFilter1 = new sap.ui.model.Filter("ValueHelpType", sap.ui.model.FilterOperator.EQ, 'PROJ');
+				aFilters.push(oFilter1);
+				this._pDialog.bindAggregation("items", {
+					path: "/ValueHelpSet",
+					template: oTemplate,
+					filters: aFilters
+				});
 			},
 
 			//search in project value help dialog

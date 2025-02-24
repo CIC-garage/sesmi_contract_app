@@ -8,7 +8,7 @@
   "dependencies": {
     "@cap-js/hana": "^1",
     "@sap-cloud-sdk/http-client": "^3.25.0",
-    "@sap/cds": "^8.6.1",
+    "@sap/cds": "^8.7.2",
     "@sap/hana-client": "^2.23.26",
     "@sap/xsenv": "^5.4.0",
     "@sap/xssec": "^4.4.0",
@@ -36,7 +36,9 @@
     },
     "requires": {
       "auth": "mocked",
-      "destinations": true
+      "destinations": true,
+      "html5-repo": true,
+      "workzone": true
     },
     "cdsc": {
       "severities": {
