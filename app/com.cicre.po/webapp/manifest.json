@@ -24,6 +24,18 @@
           "odataVersion": "4.0"
         }
       }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "com.cicre.po-display": {
+          "semanticObject": "com.cicre.po",
+          "action": "display",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
     }
   },
   "sap.ui": {
@@ -97,11 +109,11 @@
             "TargetWorkList"
           ]
         },
-				{
-					"pattern": "createContract",
-					"name": "createContract",
-					"target": "createContract"
-				}
+        {
+          "pattern": "createContract",
+          "name": "createContract",
+          "target": "createContract"
+        }
       ],
       "targets": {
         "TargetWorkList": {
@@ -111,12 +123,12 @@
           "viewId": "WorkList",
           "viewName": "WorkList"
         },
-				"createContract": {
-					"viewPath": "com.cicre.po.view",
-					"viewName": "CreateContract",
-					"viewLevel": 2,
-					"transition": "flip"
-				}
+        "createContract": {
+          "viewPath": "com.cicre.po.view",
+          "viewName": "CreateContract",
+          "viewLevel": 2,
+          "transition": "flip"
+        }
       }
     },
     "rootView": {
@@ -125,5 +137,9 @@
       "async": true,
       "id": "App"
     }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "SESMI_CONTRACT_APP.service"
   }
 }
