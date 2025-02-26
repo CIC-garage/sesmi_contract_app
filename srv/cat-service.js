@@ -75,6 +75,15 @@ module.exports = cds.service.impl(async function () {
 
       this.on('CREATE', 'ContractPOHeaderSet', async (req) => {
 
+        req.data.DocDate = req.data.DocDate + 'T00:00:00';
+        req.data.VperStart = req.data.VperStart + 'T00:00:00';
+        req.data.VperEnd = req.data.VperEnd + 'T00:00:00';
+        req.data.CreationDate = req.data.CreationDate + 'T00:00:00';
+        req.data.ValidFrom = req.data.ValidFrom + 'T00:00:00';
+        req.data.ValidTo = req.data.ValidTo + 'T00:00:00';
+        req.data.SigninDate = req.data.SigninDate + 'T00:00:00';
+        req.data.RevisedValidTo = req.data.RevisedValidTo + 'T00:00:00';
+
         const csrfResponse = await executeHttpRequest({
           method: 'GET',
           url: 'http://S4H-QAS.bhgroup.local:8003/sap/opu/odata/CICSE/SESMI_SRV/',
@@ -101,16 +110,19 @@ module.exports = cds.service.impl(async function () {
               }
             }
             );
+          console.log(req.headers)
+           
           
-          
-          return {
-            PoNumber: req.data.PoNumber, 
-            ...response.data.d
-        };
+          return  response.data.d;
         
         } catch (error) {
           console.error('Error executing the request', error);
         }
+    });
+
+    this.on('READ', 'ContractPOHeaderSet', async (req) => {
+      var PoNumber = req.data.PoNumber;
+      return req.data;
     });
 
     this.on('READ', 'HeaderSet', async (req) => {

@@ -113,7 +113,14 @@
           "pattern": "createContract",
           "name": "createContract",
           "target": "createContract"
-        }
+        },
+				{
+					"pattern": "ContractPOHeaderSet-{objectId}",
+					"name": "object",
+					"target": [
+						"object"
+					]
+				}
       ],
       "targets": {
         "TargetWorkList": {
@@ -128,7 +135,12 @@
           "viewName": "CreateContract",
           "viewLevel": 2,
           "transition": "flip"
-        }
+        },
+				"object": {
+					"viewName": "Object",
+					"viewId": "object",
+					"viewLevel": 2
+				}
       }
     },
     "rootView": {

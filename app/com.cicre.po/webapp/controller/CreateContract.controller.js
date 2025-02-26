@@ -2393,56 +2393,66 @@ sap.ui.define([
 									var oModel = that.getView().getModel();
 									console.log(createdObject);
 									that.getView().setBusy(true);
-									oModel.bindList("/ContractPOHeaderSet").create(createdObject, {
-										success: function (oData, res) {
+									const oListBinding = oModel.bindList("/ContractPOHeaderSet");
 
-											if (oData.PoNumber !== "") {
-												sap.m.MessageBox.success("Contract " + oData.PoNumber + " Created Successfully!", {
-													//icon: sap.m.MessageBox.Icon.SUCCESS,
-													title: "Success",
-													onClose: function (oAction) {
-														that.getRouter().navTo("object", {
-															objectId: oData.PoNumber
-														});
-													}
-												});
-												that.getView().setBusy(false);
-											} else {
-												sap.m.MessageBox.error(oData.Message, {
-													//icon: sap.m.MessageBox.Icon.ERROR,
-													title: "Error"
-												});
-												that.getView().setBusy(false);
-											}
-										},
-										error: function (oResponse) {
+									// Ensure the request is sent
+									oListBinding.attachCreateCompleted((oEvent) => {
+										console.log("Create Event Completed:", oEvent);
+									});
 
-											that.getView().setBusy(false);
-											sap.m.MessageToast.show("Error Creating Contract", {
-												duration: 4000
-											});
-											if (JSON.parse(oResponse.responseText)) {
-												var oErrorResponse = JSON.parse(oResponse.responseText),
-													aMessages = oErrorResponse["error"]["innererror"]["errordetails"],
-													messageSet = that.getView().getModel("localJson").getProperty("/MessageSet");
-												for (var i = 0; i < aMessages.length - 1; i++) {
-													var message = {
-														type: "Error",
-														title: aMessages[i].code.substring(0, 10),
-														description: aMessages[i].message
-													};
-													messageSet.push(message);
+									const oContext = oListBinding.create(createdObject);
+
+									oContext.created().then((oData) => {
+										// Success Handling
+										const oCreatedData = oContext.getObject();
+										if (oCreatedData.PoNumber) {
+											sap.m.MessageBox.success("Contract " + oCreatedData.PoNumber + " Created Successfully!", {
+												//icon: sap.m.MessageBox.Icon.SUCCESS,
+												title: "Success",
+												onClose: function (oAction) {
+													that.getRouter().navTo("object", {
+														objectId: oCreatedData.PoNumber
+													});
 												}
+											});
+										} else {
+											sap.m.MessageBox.error("Error: " + oCreatedData.Message, {
+												title: "Error"
+											});
+										}
+										that.getView().setBusy(false);
+									}).catch((oError) => {
+										// Error Handling
+										that.getView().setBusy(false);
+										sap.m.MessageToast.show("Error Creating Contract", {
+											duration: 4000
+										});
+
+										let errorMsg = "An unexpected error occurred.";
+										try {
+											const oErrorResponse = JSON.parse(oError.responseText);
+											const aMessages = oErrorResponse.error?.innererror?.errordetails || [];
+											
+											if (aMessages.length > 0) {
+												let messageSet = that.getView().getModel("localJson").getProperty("/MessageSet") || [];
+												aMessages.forEach((msg) => {
+													messageSet.push({
+														type: "Error",
+														title: msg.code.substring(0, 10),
+														description: msg.message
+													});
+												});
 
 												that.getView().getModel("localJson").setProperty("/MessageSet", messageSet);
 												that.getView().getModel("localJson").setProperty("/MessagesLength", messageSet.length);
 											} else {
-												sap.m.MessageBox.error(oData.Message, {
-													//icon: sap.m.MessageBox.Icon.ERROR,
-													title: "Error"
-												});
+												errorMsg = oErrorResponse.error?.message || "Unknown error.";
 											}
+										} catch (e) {
+											console.error("Error Parsing Response:", e);
 										}
+
+										sap.m.MessageBox.error(errorMsg, { title: "Error" });
 									});
 								}, 2000);
 							}
